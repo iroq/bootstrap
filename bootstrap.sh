@@ -1,11 +1,14 @@
 #!/bin/sh
 
-# setup keys
-git clone https://github.com/iroq/keys $HOME/.keys &&
-ln -fs $HOME/keys/.git-credentials $HOME/.git-credentials
+function setupRepository {
+    NAME=$1
 
-# setup dots
-git clone --separate-git-dir=$HOME/.dots http://github.com/iroq/dots $HOME/dots-tmp &&
-rm -r $HOME/dots-tmp/ 
-alias config='/usr/bin/git --git-dir=$HOME/.dots/ --work-tree=$HOME'
-config checkout -- .
+    git clone --separate-git-dir=$HOME/.$NAME http://github.com/iroq/$NAME $HOME/$NAME-tmp &&
+    rm -r $HOME/$NAME-tmp/ 
+    alias $NAME='/usr/bin/git --git-dir=$HOME/.$NAME/ --work-tree=$HOME'
+    $NAME checkout -- .
+    $NAME config status.showUntrackedFiles no
+}
+
+setupRepository dotfiles
+setupRepository keys
